@@ -79,17 +79,39 @@ int main(void)
 {
     const int screenWidth = 1500;
     const int screenHeight = 1000;
+    float learningRate = 0.1;
+    
+    
+    
+   Vector2 iW;
+   printf("W_i_x: ");
+   scanf("%f", &(iW.x));
+   
+   printf("W_i_y: ");
+   scanf("%f", &(iW.y));
+   
+   //float xx = 20;
+float xBackup = iW.x;
+//float yy = 10;
+float yBackup = iW.y;
+    
 
     InitWindow(screenWidth, screenHeight, "Gradient Decent");
 
+
+
+
+
     Camera camera = { 0 };
-    camera.position = (Vector3){ 200, 200, 160};
+    camera.position = (Vector3){ -200, -250, 150};
     camera.target = (Vector3){  0, 0, 0 };
     camera.up = (Vector3){ 0.0f, 0.0f, 1.0f };
     camera.fovy = 45.0f;
    //camera.projection = CAMERA_PERSPECTIVE;
-   SetCameraMoveControls(KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_LEFT, KEY_W, KEY_S);
-  SetCameraMode(camera, CAMERA_THIRD_PERSON); 
+   //SetCameraMoveControls(KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_LEFT, KEY_W, KEY_S);
+ // SetCameraMode(camera, CAMERA_THIRD_PERSON); 
+ 
+   
    
   
    
@@ -121,21 +143,32 @@ int main(void)
     SetTargetFPS(60);               
    
 
-float xx = 20;
-float yy = 10;
+
   
     while (!WindowShouldClose())       
     {
-        /*if (IsKeyDown(KEY_RIGHT)) camera.position.x += 3.0f;
-        if (IsKeyDown(KEY_LEFT)) camera.position.y -= 3.0f;
-        if (IsKeyDown(KEY_UP)) camera.position.z += 3.0f;
-         if (IsKeyDown(KEY_DOWN)) camera.position.z -= 3.0f;*/
+        if (IsKeyDown(KEY_RIGHT)) camera.position.x += 3.0f;
+        if (IsKeyDown(KEY_LEFT)) camera.position.x -= 3.0f;
+        if (IsKeyDown(KEY_UP)) camera.position.y += 3.0f;
+        if (IsKeyDown(KEY_DOWN)) camera.position.y -= 3.0f;
+         if (IsKeyDown(KEY_W)) camera.position.z += 3.0f;
+         if (IsKeyDown(KEY_S)) camera.position.z -= 3.0f;
+         
+         if(IsKeyPressed(KEY_R)) {
+             iW.x = xBackup;
+             iW.y = yBackup;
+         }
       
         UpdateCamera(&camera);         
      
         BeginDrawing();
 
             ClearBackground(RAYWHITE);
+
+                DrawText(FormatText("Learning Rate: %f", learningRate), 10, 10, 20, BLACK);
+                DrawText(FormatText("Unit Gradient: (%f, %f)", gradient(iW.x, iW.y).x, gradient(iW.x, iW.y).y), 10, 60, 20, BLACK);
+                DrawText(FormatText("Sphere x, y: (%f, %f)", iW.x, iW.y), 10, 100, 20, BLACK);
+                
 
             BeginMode3D(camera);
 
@@ -146,16 +179,23 @@ float yy = 10;
                DrawCube((Vector3){x, y, fz(x, y)}, 1, 1, 1, (Color){(int)fz(x, y)*5, 5, 50, 100});
                     
               }
-  }
+        }
                    
-                   xx = xx - 0.4*gradient(xx, yy).x;
-                   yy = yy - 0.4*gradient(xx, yy).y;
-                   DrawSphere((Vector3){xx, yy, fz(xx, yy)+5.5}, 5, GREEN);
+                   iW.x = iW.x - learningRate * gradient(iW.x, iW.y).x;
+                   iW.y = iW.y - learningRate * gradient(iW.x, iW.y).y;
+                   DrawSphere((Vector3){iW.x, iW.y, fz(iW.x, iW.y)+5.5}, 5, GREEN);
+                   
+                   learningRate = fabs(gradient(iW.x, iW.y).x * gradient(iW.x, iW.y).y);
 
                 
                 DrawLine3D((Vector3){0, 0, 1000}, (Vector3){0, 0, -1000}, BLACK);
                 DrawLine3D((Vector3){0, 1000, 0}, (Vector3){0, -1000, 0}, BLACK);
                 DrawLine3D((Vector3){1000, 0, 0}, (Vector3){-1000, 0, 0}, BLACK);
+                
+                
+                
+               
+                
                 
                 //DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
             
