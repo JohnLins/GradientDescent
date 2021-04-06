@@ -1,20 +1,15 @@
 #include "raylib.h"
 #include <math.h>
-
-  
 #include <stdio.h>
 #include <stdlib.h>
 
 #define WINDOW 30
-#define RATE 0.2
-
+#define DENS_RATE 0.2
 
 typedef struct Node {
   float item;
   struct Node* next;
 } Node;
-
-
 
 
 void push(Node** ref, float data) {
@@ -38,26 +33,12 @@ void push(Node** ref, float data) {
 
 
 void display(Node* node) {
-    //float xy = -WINDOW;
-    
-  
-    
-    
-    
-   
-  
-  
-  for(float x = -WINDOW; x < WINDOW; x+=RATE){
-            for(float y = -WINDOW; y < WINDOW; y+=RATE){
-                DrawCube((Vector3){x, y, node->item}, 1, 1, 1, (Color){(int)node->item*5, 5, 50, 100});
-node = node->next;                
-               //DrawCube((Vector3){x, y, fz(x, y)}, 1, 1, 1, (Color){(int)fz(x, y)*5, 5, 50, 100});
-                    
-              }
+  for(float x = -WINDOW; x < WINDOW; x+=DENS_RATE){
+      for(float y = -WINDOW; y < WINDOW; y+=DENS_RATE){
+          DrawCube((Vector3){x, y, node->item}, 1, 1, 1, (Color){(int)node->item*5, 5, 50, 100});
+          node = node->next;                
+      }
   }
-  
-     
-  
 }
 
 
@@ -81,24 +62,29 @@ int main(void)
     const int screenHeight = 1000;
     float learningRate = 0.1;
     
-    
-    
-   Vector2 iW;
-   printf("W_i_x: ");
-   scanf("%f", &(iW.x));
    
-   printf("W_i_y: ");
-   scanf("%f", &(iW.y));
+    Vector2 iW;
+    printf("W_i_x: ");
+    scanf("%f", &(iW.x));
    
-   //float xx = 20;
-float xBackup = iW.x;
-//float yy = 10;
-float yBackup = iW.y;
+    printf("W_i_y: ");
+    scanf("%f", &(iW.y));
+   
+    float xBackup = iW.x;
+    float yBackup = iW.y;
+
+
+    Node* head = NULL;
+
+    for(float x = -WINDOW; x < WINDOW; x+=DENS_RATE){
+         for(float y = -WINDOW; y < WINDOW; y+=DENS_RATE){
+              push(&head, fz(x, y));   
+         }
+    }
+
     
 
     InitWindow(screenWidth, screenHeight, "Gradient Decent");
-
-
 
 
 
@@ -107,44 +93,9 @@ float yBackup = iW.y;
     camera.target = (Vector3){  0, 0, 0 };
     camera.up = (Vector3){ 0.0f, 0.0f, 1.0f };
     camera.fovy = 45.0f;
-   //camera.projection = CAMERA_PERSPECTIVE;
-   //SetCameraMoveControls(KEY_UP, KEY_DOWN, KEY_RIGHT, KEY_LEFT, KEY_W, KEY_S);
- // SetCameraMode(camera, CAMERA_THIRD_PERSON); 
- 
-   
-   
-  
-   
-  //SetCameraSmoothZoomControl(87);                    
-    /*void SetCameraMoveControls(int frontKey, int backKey, 
-                               int rightKey, int leftKey, 
-                               int upKey, int downKey);        
-    
-   */
-   
-   
-   
-   /* Node* head = NULL;
-
-    
-    
-   
-  for(float x = -WINDOW; x < WINDOW; x+=RATE){
-            for(float y = -WINDOW; y < WINDOW; y+=RATE){
-                push(&head, fz(x, y));   
-               //DrawCube((Vector3){x, y, fz(x, y)}, 1, 1, 1, (Color){(int)fz(x, y)*5, 5, 50, 100});
-                    
-              }
-  }*/
-              
-    
-
 
     SetTargetFPS(60);               
    
-
-
-  
     while (!WindowShouldClose())       
     {
         if (IsKeyDown(KEY_RIGHT)) camera.position.x += 3.0f;
@@ -173,13 +124,14 @@ float yBackup = iW.y;
             BeginMode3D(camera);
 
     
-                for(float x = -WINDOW; x < WINDOW; x+=RATE){
+                display(head);
+               /* for(float x = -WINDOW; x < WINDOW; x+=RATE){
             for(float y = -WINDOW; y < WINDOW; y+=RATE){
                 //push(&head, fz(x, y));   
                DrawCube((Vector3){x, y, fz(x, y)}, 1, 1, 1, (Color){(int)fz(x, y)*5, 5, 50, 100});
                     
               }
-        }
+        }*/
                    
                    iW.x = iW.x - learningRate * gradient(iW.x, iW.y).x;
                    iW.y = iW.y - learningRate * gradient(iW.x, iW.y).y;
@@ -194,14 +146,8 @@ float yBackup = iW.y;
                 
                 
                 
-               
-                
-                
-                //DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
             
             EndMode3D();
-
-          
 
         EndDrawing();
     }
