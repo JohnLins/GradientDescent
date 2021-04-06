@@ -5,6 +5,7 @@
 
 #define WINDOW 30
 #define DENS_RATE 0.2
+#define COLOR_RATE 255/40
 
 typedef struct Node {
   float item;
@@ -18,7 +19,7 @@ void push(Node** ref, float data);
 void display(Node* node) {
   for(float x = -WINDOW; x < WINDOW; x+=DENS_RATE){
       for(float y = -WINDOW; y < WINDOW; y+=DENS_RATE){
-          DrawCube((Vector3){x, y, node->item}, 1, 1, 1, (Color){(int)node->item*5, 5, 50, 100});
+          DrawCube((Vector3){x, y, node->item}, 1, 1, 1, (Color){(int)node->item*COLOR_RATE, 5, 10, 100});
           node = node->next;                
       }
   }
@@ -26,14 +27,23 @@ void display(Node* node) {
 
 
 float fz(float x, float y){
-    
+    //alternative
+    //return cosf(-.2*x)+ 2*sinf(-.3*y);
     return powf((x*x + y*y), 0.5);
    
 }
 
 Vector2 gradient(float x, float y){
-    float magnitude = sqrt(powf(x/powf((x*x+y*y), .5), 2) + powf(y/powf((x*x+y*y), .5), 2));
-    return (Vector2){(x/powf((x*x+y*y), .5))/magnitude, (y/powf((x*x+y*y), .5))/magnitude};
+    float g_x = (x/powf((x*x+y*y), .5));
+    float g_y = (y/powf((x*x+y*y), .5));
+    /* alternative
+    float g_x = -0.2*sinf(0.2*x);
+    float g_y = -0.6*cosf(0.3*y);
+    */
+    
+    float magnitude = sqrt(powf(g_x, 2) + powf(g_y, 2));
+    return (Vector2){g_x/magnitude, g_y/magnitude};
+    
 }
 
 int main(void)
