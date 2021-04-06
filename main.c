@@ -12,24 +12,7 @@ typedef struct Node {
 } Node;
 
 
-void push(Node** ref, float data) {
-  Node* new_node = (Node*)malloc(sizeof(Node));
-  Node* last = *ref;
-
-  new_node->item = data;
-  new_node->next = NULL;
-
-  if (*ref == NULL) {
-    *ref = new_node;
-    return;
-  }
-
-  while (last->next != NULL)
-    last = last->next;
-
-  last->next = new_node;
-  return;
-}
+void push(Node** ref, float data);
 
 
 void display(Node* node) {
@@ -42,13 +25,10 @@ void display(Node* node) {
 }
 
 
- 
-
 float fz(float x, float y){
     
-    //return powf(powf((x*x), 2)+5*(y*y), 3.5) + 2;
-    //return pow((powf(0.4,2)-powf((0.6-powf((x*x+y*y),0.5)),2)),0.5);
     return powf((x*x + y*y), 0.5);
+   
 }
 
 Vector2 gradient(float x, float y){
@@ -155,4 +135,23 @@ int main(void)
     CloseWindow();       
 
     return 0;
+}
+
+void push(Node** ref, float data) {
+  Node* new_node = (Node*)malloc(sizeof(Node));
+  Node* last = *ref;
+
+  new_node->item = data;
+  new_node->next = NULL;
+
+  if (*ref == NULL) {
+    *ref = new_node;
+    return;
+  }
+
+  while (last->next != NULL)
+    last = last->next;
+
+  last->next = new_node;
+  return;
 }
