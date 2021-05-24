@@ -5,4 +5,4 @@
 
 
 
-<img src="gd.gif"/>
+<img src="assets/gd.gif"/>
