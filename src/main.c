@@ -148,20 +148,20 @@ int main(void)
 }
 
 void push(Node** ref, float data) {
-  Node* new_node = (Node*)malloc(sizeof(Node));
+  Node* newNode = (Node*)malloc(sizeof(Node));
   Node* last = *ref;
 
-  new_node->item = data;
-  new_node->next = NULL;
+  newNode->item = data;
+  newNode->next = NULL;
 
   if (*ref == NULL) {
-    *ref = new_node;
+    *ref = newNode;
     return;
   }
 
   while (last->next != NULL)
     last = last->next;
 
-  last->next = new_node;
+  last->next = newNode;
   return;
 }
